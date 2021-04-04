@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Machine Rental Management Mobile</string>
+    <string name="qr_code_camera_button">Open camera view for QR Code scanning</string>
 </resources>
