@@ -1,6 +1,8 @@
 package com.example.mrm.mobile;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.budiyev.android.codescanner.CodeScanner;
@@ -20,8 +22,10 @@ public class CameraActivity extends AppCompatActivity {
         mCodeScanner = new CodeScanner(this, scannerView);
 
         mCodeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
-            // Toast.makeText(CameraActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
-            Snackbar.make(scannerView, result.getText(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Intent data = new Intent();
+            data.putExtra("QRCode", result.getText());
+            setResult(RESULT_OK, data);
+            finish();
         }));
 
         scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
