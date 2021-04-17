@@ -4,6 +4,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import android.Manifest;
 import android.app.Activity;
@@ -25,14 +31,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     assert data != null;
                     String QRCode = data.getStringExtra("QRCode");
-                    View mainView = findViewById(R.id.mainLayout);
-                    Snackbar.make(mainView, "QRCode obtained: " + QRCode, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-                    ProgressBar progressBar = findViewById(R.id.progressBar);
-                    TextView textView = findViewById(R.id.progressText);
-
-                    progressBar.setVisibility(View.VISIBLE);
-                    textView.setVisibility(View.VISIBLE);
+                    launchBackendConnectionWorker(QRCode);
                 }
             });
 
@@ -67,5 +66,49 @@ public class MainActivity extends AppCompatActivity {
                 mRequestPermissionLauncher.launch(Manifest.permission.CAMERA);
             }
         });
+    }
+
+    private void launchBackendConnectionWorker(String QRCode) {
+        View mainView = findViewById(R.id.mainLayout);
+        Snackbar.make(mainView, "QRCode obtained: " + QRCode, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+
+        // Show progress bar indicating that a connection to the backend is in progress
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        TextView textView = findViewById(R.id.progressText);
+        progressBar.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+
+        // Send QRCode data to the worker object
+        Data inputData = new Data.Builder()
+                .putString(BackendConnectionWorker.INPUT_QRCODE_KEY, QRCode)
+                .build();
+
+        WorkRequest backendConnectionRequest = new OneTimeWorkRequest
+                .Builder(BackendConnectionWorker.class)
+                .setInputData(inputData)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(backendConnectionRequest);
+
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData(backendConnectionRequest.getId())
+                .observe(this, workInfo -> {
+                    if (workInfo.getState().isFinished()) {
+                        if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                            String resultMessage = workInfo.getOutputData()
+                                    .getString(BackendConnectionWorker.RESPONSE_KEY);
+                            Snackbar.make(mainView, resultMessage, Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        } else {
+                            String error = workInfo.getOutputData()
+                                    .getString(BackendConnectionWorker.ERROR_MESSAGE_KEY);
+                            Snackbar.make(mainView, error, Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        }
+
+                        progressBar.setVisibility(View.GONE);
+                        textView.setVisibility(View.GONE);
+                    }
+                });
     }
 }

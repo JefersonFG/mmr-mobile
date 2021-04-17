@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Machine Rental Management Mobile</string>
+    <string name="qr_code_camera_button">Abrir tela da câmera para escanear o código QR</string>
+    <string name="progressText">Carregando…</string>
+</resources>
