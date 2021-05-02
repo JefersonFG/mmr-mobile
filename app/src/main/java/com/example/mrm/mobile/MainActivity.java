@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
@@ -17,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -73,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
         // Search button for getting data for a machine with ID typed into the main editor
         Button searchButton = findViewById(R.id.searchButton);
         searchButton.setOnClickListener(view -> {
+            // Hide keyboard
+            View currentView = this.getCurrentFocus();
+            if (currentView != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+
             // Get the typed in machine code, validate and start backend connection process
             // TODO: Machine code is a better name once we got the actual data on the QR Code
             EditText editTextQRCode = findViewById(R.id.editTextQRCode);
@@ -86,20 +93,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void launchBackendConnectionWorker(String QRCode) {
-        View mainView = findViewById(R.id.mainLayout);
-        Snackbar.make(mainView, "QRCode obtained: " + QRCode, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-
+    private void launchBackendConnectionWorker(String machineCode) {
         // Show progress bar indicating that a connection to the backend is in progress
         ProgressBar progressBar = findViewById(R.id.progressBar);
         TextView textView = findViewById(R.id.progressText);
         progressBar.setVisibility(View.VISIBLE);
         textView.setVisibility(View.VISIBLE);
 
-        // Send QRCode data to the worker object
+        // Send machine code data to the worker object
         Data inputData = new Data.Builder()
-                .putString(BackendConnectionWorker.INPUT_QRCODE_KEY, QRCode)
+                .putString(BackendConnectionWorker.INPUT_MACHINE_CODE, machineCode)
                 .build();
 
         WorkRequest backendConnectionRequest = new OneTimeWorkRequest
@@ -112,15 +115,14 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(backendConnectionRequest.getId())
                 .observe(this, workInfo -> {
                     if (workInfo.getState().isFinished()) {
+                        View mainView = findViewById(R.id.mainLayout);
+                        String workerResult = workInfo.getOutputData()
+                                .getString(BackendConnectionWorker.WORKER_RESULT);
                         if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                            String resultMessage = workInfo.getOutputData()
-                                    .getString(BackendConnectionWorker.RESPONSE_KEY);
-                            Snackbar.make(mainView, resultMessage, Snackbar.LENGTH_LONG)
+                            Snackbar.make(mainView, "Response from server: " + workerResult, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                         } else {
-                            String error = workInfo.getOutputData()
-                                    .getString(BackendConnectionWorker.ERROR_MESSAGE_KEY);
-                            Snackbar.make(mainView, error, Snackbar.LENGTH_LONG)
+                            Snackbar.make(mainView, "Error getting info for machine of id " + machineCode + ": " + workerResult, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                         }
 
