@@ -17,14 +17,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity {
+// TODO: Error handling strings must be translated as well
 
+public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> mIntentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
@@ -64,6 +67,21 @@ public class MainActivity extends AppCompatActivity {
                 mRequestPermissionLauncher.launch(Manifest.permission.CAMERA);
             } else {
                 mRequestPermissionLauncher.launch(Manifest.permission.CAMERA);
+            }
+        });
+
+        // Search button for getting data for a machine with ID typed into the main editor
+        Button searchButton = findViewById(R.id.searchButton);
+        searchButton.setOnClickListener(view -> {
+            // Get the typed in machine code, validate and start backend connection process
+            // TODO: Machine code is a better name once we got the actual data on the QR Code
+            EditText editTextQRCode = findViewById(R.id.editTextQRCode);
+            String machineCode = editTextQRCode.getText().toString();
+            if (!machineCode.isEmpty() && android.text.TextUtils.isDigitsOnly(machineCode)) {
+                launchBackendConnectionWorker(machineCode);
+            } else {
+                View mainView = findViewById(R.id.mainLayout);
+                Snackbar.make(mainView, "Machine code must be non null and number based", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
     }

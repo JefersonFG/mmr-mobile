@@ -2,4 +2,8 @@
     <string name="app_name">Machine Rental Management Mobile</string>
     <string name="qr_code_camera_button">Open camera view for QR Code scanning</string>
     <string name="progressText">Loading…</string>
+    <string name="mainInstructionsString">Type in the machine code or scan its QR Code with the button below</string>
+    <string name="editTextQRCodeString">QR Code</string>
+    <string name="searchButtonString">Search</string>
+    <string name="editTextQRCodeHint">Type in the machine code</string>
 </resources>

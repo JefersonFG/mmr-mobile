@@ -7,6 +7,11 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class BackendConnectionWorker extends Worker {
     public static final String INPUT_QRCODE_KEY = "qrcode";
     public static final String RESPONSE_KEY = "response";
