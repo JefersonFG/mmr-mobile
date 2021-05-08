@@ -119,8 +119,10 @@ public class MainActivity extends AppCompatActivity {
                         String workerResult = workInfo.getOutputData()
                                 .getString(BackendConnectionWorker.WORKER_RESULT);
                         if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                            Snackbar.make(mainView, "Response from server: " + workerResult, Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
+                            // Send received data from backend to new activity to display
+                            Intent intent = new Intent(this, EquipmentInfoActivity.class);
+                            intent.putExtra(EquipmentInfoActivity.EQUIPMENT_INFO_KEY, workerResult);
+                            mIntentLauncher.launch(intent);
                         } else {
                             Snackbar.make(mainView, "Error getting info for machine of id " + machineCode + ": " + workerResult, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
