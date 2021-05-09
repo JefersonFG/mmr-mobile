@@ -16,4 +16,7 @@
     <string name="machineMaintenanceNeeded">Maintenance needed</string>
     <string name="machineActive">Active</string>
     <string name="machineComment">Last comment</string>
+    <string name="registerEventDialogTitle">Register machine event</string>
+    <string name="registerEventDialogConfirm">Confirm</string>
+    <string name="registerEventDialogCancel">Cancel</string>
 </resources>

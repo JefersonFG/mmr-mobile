@@ -1,6 +1,7 @@
 package com.example.mrm.mobile;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +13,8 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EquipmentInfoActivity extends AppCompatActivity {
+public class EquipmentInfoActivity extends AppCompatActivity
+        implements RegisterMachineEventDialogFragment.NoticeDialogListener {
     public static final String EQUIPMENT_INFO_KEY = "equipment_info";
     public static final String FALLBACK_STRING = "unavailable info";
 
@@ -79,9 +81,23 @@ public class EquipmentInfoActivity extends AppCompatActivity {
         // Button for registering an event that changes the machine status, like arrival or departure
         FloatingActionButton fab = findViewById(R.id.registerEventFAB);
         fab.setOnClickListener(view -> {
-            // TODO: Define an alert dialog to show the options to change the status
-            View layout = findViewById(R.id.equipmentInfoLayout);
-            Snackbar.make(layout, "Button pressed", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            // TODO: Show dialog in full screen
+            DialogFragment dialog = new RegisterMachineEventDialogFragment();
+            dialog.show(getSupportFragmentManager(), "RegisterMachineEventDialogFragment");
         });
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        RegisterMachineEventDialogFragment dialogFragment = (RegisterMachineEventDialogFragment) dialog;
+        int selectedOption = dialogFragment.SelectedEventOption;
+        View layout = findViewById(R.id.equipmentInfoLayout);
+        Snackbar.make(layout, "Selected option: " + selectedOption, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        View layout = findViewById(R.id.equipmentInfoLayout);
+        Snackbar.make(layout, "Cancel pressed", Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 }

@@ -17,4 +17,7 @@
     <string name="machineMaintenanceNeeded">Manutenção necessária</string>
     <string name="machineActive">Ativa</string>
     <string name="machineComment">Último comentário</string>
+    <string name="registerEventDialogTitle">Registrar evento na máquina</string>
+    <string name="registerEventDialogConfirm">Confirmar</string>
+    <string name="registerEventDialogCancel">Cancelar</string>
 </resources>
