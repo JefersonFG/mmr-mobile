@@ -59,19 +59,18 @@ public class EquipmentInfoActivity extends AppCompatActivity {
         }
 
         // Prepares the output
-        // TODO: Add string resources for translation (add for fallback string as well)
         // TODO: Determine which data to show, which to hide
         StringBuilder outputBuilder = new StringBuilder();
-        outputBuilder.append("Machine ID: ").append(id).append("\n");
-        outputBuilder.append("Name: ").append(name).append("\n");
-        outputBuilder.append("Type: ").append(type).append("\n");
-        outputBuilder.append("Power: ").append(power).append("\n");
-        outputBuilder.append("Brand: ").append(brand).append("\n");
-        outputBuilder.append("Product Model: ").append(model).append("\n");
-        outputBuilder.append("Status: ").append(status).append("\n");
-        outputBuilder.append("Needs maintenance: ").append(needsMaintenance).append("\n");
-        outputBuilder.append("Active: ").append(active).append("\n");
-        outputBuilder.append("Last comment: ").append(comment).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(id).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineName)).append(": ").append(name).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineType)).append(": ").append(type).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machinePower)).append(": ").append(power).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineBrand)).append(": ").append(brand).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineModel)).append(": ").append(model).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineStatus)).append(": ").append(status).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(needsMaintenance).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineActive)).append("? ").append(active).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineComment)).append(": ").append(comment).append("\n");
 
         // Writes it to the main textview
         TextView infoTextView = findViewById(R.id.infoTextView);

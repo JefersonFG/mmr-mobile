@@ -10,7 +10,7 @@
     <!-- TODO: Remove networkSecurityConfig and targetApi once SSL is enabled on the backend -->
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/appName"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MachineRentalManagementMobile"
