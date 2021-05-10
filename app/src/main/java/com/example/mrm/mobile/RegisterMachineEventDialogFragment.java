@@ -1,14 +1,24 @@
 package com.example.mrm.mobile;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 public class RegisterMachineEventDialogFragment extends DialogFragment {
+    public static String TAG = "register_machine_event_dialog";
+
     // Interface for allowing calle activity to process the events
     public interface NoticeDialogListener {
         void onDialogPositiveClick(DialogFragment dialog);
@@ -18,27 +28,79 @@ public class RegisterMachineEventDialogFragment extends DialogFragment {
     // Instance of the interface to deliver the events
     NoticeDialogListener listener;
 
+    // Toolbar instance to set click events
+    private Toolbar toolbar;
+
     // Indicators of selected options
-    int SelectedEventOption = -1;
+    MachineEventsEnum SelectedEventOption = MachineEventsEnum.NONE;
+    boolean MaintenanceFlagChecked = false;
+    String Comment;
 
-    @NonNull
+    public static void display(FragmentManager fragmentManager) {
+        RegisterMachineEventDialogFragment registerEventDialog = new RegisterMachineEventDialogFragment();
+        registerEventDialog.show(fragmentManager, TAG);
+    }
+
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // TODO: Dialog must be shown full screen to accommodate needs maintenance check and comment
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.registerEventDialogTitle)
-                .setSingleChoiceItems(R.array.registerEventDialogOptions, 0,
-                        (dialog, which) -> SelectedEventOption = which)
-                .setPositiveButton(R.string.registerEventDialogConfirm, (dialog, id) -> {
-                    // Send the positive button event back to the host activity
-                    listener.onDialogPositiveClick(RegisterMachineEventDialogFragment.this);
-                })
-                .setNegativeButton(R.string.registerEventDialogCancel, (dialog, id) -> {
-                    // Send the negative button event back to the host activity
-                    listener.onDialogNegativeClick(RegisterMachineEventDialogFragment.this);
-                });
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
+    }
 
-        return builder.create();
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(R.layout.register_event_dialog, container, false);
+
+        toolbar = rootView.findViewById(R.id.toolbar);
+
+        // Set radio button events to save last selected position
+        RadioButton radioEventInventory = rootView.findViewById(R.id.radioEventInventory);
+        radioEventInventory.setOnClickListener(view -> SelectedEventOption = MachineEventsEnum.INVENTORY);
+        RadioButton radioEventCustomer = rootView.findViewById(R.id.radioEventCustomer);
+        radioEventCustomer.setOnClickListener(view -> SelectedEventOption = MachineEventsEnum.CUSTOMER);
+        RadioButton radioEventMaintenance = rootView.findViewById(R.id.radioEventMaintenance);
+        radioEventMaintenance.setOnClickListener(view -> SelectedEventOption = MachineEventsEnum.MAINTENANCE);
+        RadioButton radioEventReadyToRent = rootView.findViewById(R.id.radioEventReadyToRent);
+        radioEventReadyToRent.setOnClickListener(view -> SelectedEventOption = MachineEventsEnum.READY_TO_RENT);
+
+        // Set checkbox event to save state
+        CheckBox needsMaintenanceCheckBox = rootView.findViewById(R.id.checkBoxEventFlagNeedsMaintenance);
+        needsMaintenanceCheckBox.setOnClickListener(view -> MaintenanceFlagChecked = ((CheckBox) view).isChecked());
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        toolbar.setNavigationOnClickListener(v -> {
+            listener.onDialogNegativeClick(RegisterMachineEventDialogFragment.this);
+            dismiss();
+        });
+        toolbar.setTitle(getResources().getString(R.string.registerEventDialogTitle));
+        toolbar.inflateMenu(R.menu.register_event_dialog);
+        toolbar.setOnMenuItemClickListener(item -> {
+            // Save final state of the comment
+            EditText commentEditText = view.findViewById(R.id.editTextEventComment);
+            Comment = commentEditText.getText().toString();
+            listener.onDialogPositiveClick(RegisterMachineEventDialogFragment.this);
+            dismiss();
+            return true;
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+            dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
+        }
     }
 
     @Override

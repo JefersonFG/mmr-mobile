@@ -16,7 +16,13 @@
     <string name="machineMaintenanceNeeded">Maintenance needed</string>
     <string name="machineActive">Active</string>
     <string name="machineComment">Last comment</string>
-    <string name="registerEventDialogTitle">Register machine event</string>
-    <string name="registerEventDialogConfirm">Confirm</string>
-    <string name="registerEventDialogCancel">Cancel</string>
+    <string name="registerEventDialogTitle">Register event</string>
+    <string name="registerEventDialogSave">Save</string>
+    <string name="registerEventDialogRadioText">Select the event to be registered</string>
+    <string name="eventInventory">Going to inventory</string>
+    <string name="eventCustomer">Going to customer</string>
+    <string name="eventMaintenance">Going to maintenance</string>
+    <string name="eventReadyToRent">Set to ready to rent</string>
+    <string name="eventFlagNeedsMaintenance">Mark as needing maintenance</string>
+    <string name="eventComment">Add a comment to this event entry (optional)</string>
 </resources>

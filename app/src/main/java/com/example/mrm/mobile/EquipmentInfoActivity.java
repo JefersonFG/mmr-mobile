@@ -34,10 +34,13 @@ public class EquipmentInfoActivity extends AppCompatActivity
         String power;
         String brand;
         String model;
+        // TODO: Translate status from backend
         String status;
+        // TODO: Translate boolean values when showing on the UI
         String needsMaintenance;
-        String active;
         String comment;
+
+        // TODO: Add pressure, throughput, voltage, year and serial number
 
         // Parses it as json
         try {
@@ -51,7 +54,6 @@ public class EquipmentInfoActivity extends AppCompatActivity
             model = machineInfoJSON.optString("model", FALLBACK_STRING);
             status = machineInfoJSON.optString("status", FALLBACK_STRING);
             needsMaintenance = machineInfoJSON.optString("needsMaintenance", FALLBACK_STRING);
-            active = machineInfoJSON.optString("active", FALLBACK_STRING);
             comment = machineInfoJSON.optString("comment", FALLBACK_STRING);
         } catch (JSONException e) {
             // TODO: Improve error handling
@@ -61,7 +63,6 @@ public class EquipmentInfoActivity extends AppCompatActivity
         }
 
         // Prepares the output
-        // TODO: Determine which data to show, which to hide
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(id).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineName)).append(": ").append(name).append("\n");
@@ -71,7 +72,6 @@ public class EquipmentInfoActivity extends AppCompatActivity
         outputBuilder.append(getResources().getString(R.string.machineModel)).append(": ").append(model).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineStatus)).append(": ").append(status).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(needsMaintenance).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineActive)).append("? ").append(active).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineComment)).append(": ").append(comment).append("\n");
 
         // Writes it to the main textview
@@ -81,18 +81,21 @@ public class EquipmentInfoActivity extends AppCompatActivity
         // Button for registering an event that changes the machine status, like arrival or departure
         FloatingActionButton fab = findViewById(R.id.registerEventFAB);
         fab.setOnClickListener(view -> {
-            // TODO: Show dialog in full screen
-            DialogFragment dialog = new RegisterMachineEventDialogFragment();
-            dialog.show(getSupportFragmentManager(), "RegisterMachineEventDialogFragment");
+            // Show dialog in full screen
+            RegisterMachineEventDialogFragment.display(getSupportFragmentManager());
         });
     }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
+        // TODO: Send this data to the backend
         RegisterMachineEventDialogFragment dialogFragment = (RegisterMachineEventDialogFragment) dialog;
-        int selectedOption = dialogFragment.SelectedEventOption;
+        MachineEventsEnum selectedOption = dialogFragment.SelectedEventOption;
+        boolean flag = dialogFragment.MaintenanceFlagChecked;
+        String comment = dialogFragment.Comment;
         View layout = findViewById(R.id.equipmentInfoLayout);
-        Snackbar.make(layout, "Selected option: " + selectedOption, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Snackbar.make(layout, "Event: " + selectedOption + " - Flag: " + flag, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Snackbar.make(layout, "Comment: " + comment, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     @Override

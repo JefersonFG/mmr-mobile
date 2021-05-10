@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="registerEventDialogOptions">
-        <item>Going to inventory</item>
-        <item>Going to customer</item>
-        <item>Going to maintenance</item>
-        <item>Set to ready to rent</item>
-    </string-array>
-</resources>

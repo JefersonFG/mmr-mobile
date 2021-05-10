@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="registerEventDialogOptions">
-        <item>Indo para o inventário</item>
-        <item>Indo para cliente</item>
-        <item>Indo para manutenção</item>
-        <item>Marcar como pronto para alugar</item>
-    </string-array>
-</resources>

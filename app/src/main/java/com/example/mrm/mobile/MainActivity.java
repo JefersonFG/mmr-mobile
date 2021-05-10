@@ -27,6 +27,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 // TODO: Error handling strings must be translated as well
 
+// TODO: Improve readability
+
 public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> mIntentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
