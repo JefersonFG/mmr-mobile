@@ -28,7 +28,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
     public static final String EQUIPMENT_INFO_KEY = "equipment_info";
     public static final String FALLBACK_STRING = "unavailable info";
 
-    private String mMachineCode;
+    private StockItem mStockItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,56 +38,23 @@ public class EquipmentInfoActivity extends AppCompatActivity
         // Gets the input data
         String equipmentInfo = getIntent().getStringExtra(EQUIPMENT_INFO_KEY);
 
-        // Declare variables for the data we're looking for
-        // All declared as strings for the fallback message
-        String id;
-        String name;
-        String type;
-        String power;
-        String brand;
-        String model;
-        // TODO: Translate status from backend
-        String status;
-        // TODO: Translate boolean values when showing on the UI
-        String needsMaintenance;
-        String comment;
-
-        // TODO: Add pressure, throughput, voltage, year and serial number
-
-        // Parses it as json
-        try {
-            JSONObject machineInfoJSON = new JSONObject(equipmentInfo);
-            // TODO: Save keys as constants?
-            id = machineInfoJSON.optString("id", FALLBACK_STRING);
-            name = machineInfoJSON.optString("name", FALLBACK_STRING);
-            type = machineInfoJSON.optString("type", FALLBACK_STRING);
-            power = machineInfoJSON.optString("power", FALLBACK_STRING);
-            brand = machineInfoJSON.optString("brand", FALLBACK_STRING);
-            model = machineInfoJSON.optString("model", FALLBACK_STRING);
-            status = machineInfoJSON.optString("status", FALLBACK_STRING);
-            needsMaintenance = machineInfoJSON.optString("needsMaintenance", FALLBACK_STRING);
-            comment = machineInfoJSON.optString("comment", FALLBACK_STRING);
-        } catch (JSONException e) {
-            // TODO: Improve error handling
-            View layout = findViewById(R.id.equipmentInfoLayout);
-            Snackbar.make(layout, "Error parsing machine info", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            return;
-        }
-
-        // Saves the machine ID
-        mMachineCode = id;
+        // Parse the equipment info into its own class
+        mStockItem = new StockItem(equipmentInfo);
 
         // Prepares the output
+        // TODO: Add pressure, throughput, voltage, year and serial number
         StringBuilder outputBuilder = new StringBuilder();
-        outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(id).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineName)).append(": ").append(name).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineType)).append(": ").append(type).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machinePower)).append(": ").append(power).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineBrand)).append(": ").append(brand).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineModel)).append(": ").append(model).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineStatus)).append(": ").append(status).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(needsMaintenance).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineComment)).append(": ").append(comment).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(mStockItem.infoMap.get(StockItemFields.id)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineName)).append(": ").append(mStockItem.infoMap.get(StockItemFields.name)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineType)).append(": ").append(mStockItem.infoMap.get(StockItemFields.type)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machinePower)).append(": ").append(mStockItem.infoMap.get(StockItemFields.power)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineBrand)).append(": ").append(mStockItem.infoMap.get(StockItemFields.brand)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineModel)).append(": ").append(mStockItem.infoMap.get(StockItemFields.model)).append("\n");
+        // TODO: Translate status from backend
+        outputBuilder.append(getResources().getString(R.string.machineStatus)).append(": ").append(mStockItem.infoMap.get(StockItemFields.status)).append("\n");
+        // TODO: Translate boolean values when showing on the UI
+        outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(mStockItem.infoMap.get(StockItemFields.needsMaintenance)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineComment)).append(": ").append(mStockItem.infoMap.get(StockItemFields.comment)).append("\n");
 
         // Writes it to the main textview
         TextView infoTextView = findViewById(R.id.infoTextView);
@@ -115,7 +82,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
 
         // Send back to the main activity to connect to the backend and show the progress
         Intent data = new Intent();
-        data.putExtra(MACHINE_CODE, mMachineCode);
+        data.putExtra(MACHINE_CODE, mStockItem.infoMap.get(StockItemFields.id));
         data.putExtra(MACHINE_UPDATE_INFO, updateJSON);
         setResult(RESULT_OK, data);
         finish();
