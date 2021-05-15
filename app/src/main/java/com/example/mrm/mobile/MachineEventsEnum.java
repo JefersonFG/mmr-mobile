@@ -5,5 +5,5 @@ public enum MachineEventsEnum {
     INVENTORY,
     CUSTOMER,
     MAINTENANCE,
-    READY_TO_RENT
+    READY_FOR_RENTAL
 }

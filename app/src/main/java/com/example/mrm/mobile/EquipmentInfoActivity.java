@@ -3,7 +3,10 @@ package com.example.mrm.mobile;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.JsonWriter;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,10 +16,19 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.StringWriter;
+
 public class EquipmentInfoActivity extends AppCompatActivity
         implements RegisterMachineEventDialogFragment.NoticeDialogListener {
+    public static String TAG = "equipment_info_activity";
+
+    public static final String MACHINE_CODE = "machine_code";
+    public static final String MACHINE_UPDATE_INFO = "machine_update_info";
+
     public static final String EQUIPMENT_INFO_KEY = "equipment_info";
     public static final String FALLBACK_STRING = "unavailable info";
+
+    private String mMachineCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +74,9 @@ public class EquipmentInfoActivity extends AppCompatActivity
             return;
         }
 
+        // Saves the machine ID
+        mMachineCode = id;
+
         // Prepares the output
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(id).append("\n");
@@ -88,19 +103,55 @@ public class EquipmentInfoActivity extends AppCompatActivity
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        // TODO: Send this data to the backend
+        // Get user input
         RegisterMachineEventDialogFragment dialogFragment = (RegisterMachineEventDialogFragment) dialog;
         MachineEventsEnum selectedOption = dialogFragment.SelectedEventOption;
         boolean flag = dialogFragment.MaintenanceFlagChecked;
         String comment = dialogFragment.Comment;
-        View layout = findViewById(R.id.equipmentInfoLayout);
-        Snackbar.make(layout, "Event: " + selectedOption + " - Flag: " + flag, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        Snackbar.make(layout, "Comment: " + comment, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+        // Generate update JSON
+        // TODO: Handle error building the JSON object
+        String updateJSON = buildUpdateJSON(selectedOption, flag, comment);
+
+        // Send back to the main activity to connect to the backend and show the progress
+        Intent data = new Intent();
+        data.putExtra(MACHINE_CODE, mMachineCode);
+        data.putExtra(MACHINE_UPDATE_INFO, updateJSON);
+        setResult(RESULT_OK, data);
+        finish();
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        View layout = findViewById(R.id.equipmentInfoLayout);
-        Snackbar.make(layout, "Cancel pressed", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    public void onDialogNegativeClick(DialogFragment dialog) {}
+
+    private String buildUpdateJSON(MachineEventsEnum event, boolean needsMaintenance, String comment) {
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(stringWriter);
+
+        try {
+            jsonWriter.beginObject();
+
+            // TODO: Constants for json keys
+            jsonWriter.name("status").value(event.toString());
+            jsonWriter.name("needsMaintenance").value(needsMaintenance);
+            jsonWriter.name("comment").value(comment);
+
+            jsonWriter.endObject();
+        } catch (Exception e) {
+            Log.d(TAG, "buildUpdateJSON: error building JSON: " + e.getMessage());
+            return "";
+        }
+
+        // Return result
+        String updateJSON = stringWriter.toString();
+
+        try {
+            stringWriter.close();
+            jsonWriter.close();
+        } catch (Exception e) {
+            Log.d(TAG, "buildUpdateJSON: error closing writers: " + e.getMessage());
+        }
+
+        return updateJSON;
     }
 }

@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
@@ -30,28 +31,6 @@ import com.google.android.material.snackbar.Snackbar;
 // TODO: Improve readability
 
 public class MainActivity extends AppCompatActivity {
-    private final ActivityResultLauncher<Intent> mIntentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    assert data != null;
-                    String QRCode = data.getStringExtra("QRCode");
-                    launchBackendConnectionWorker(QRCode);
-                }
-            });
-
-    private final ActivityResultLauncher<String> mRequestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    Intent intent = new Intent(this, CameraActivity.class);
-                    mIntentLauncher.launch(intent);
-                } else {
-                    // TODO: Improve handling when permission is denied, give user a second chance to grant the permission
-                    View mainView = findViewById(R.id.mainLayout);
-                    Snackbar.make(mainView, "Permission denied, not opening the camera view", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                }
-            });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             // Request camera permission
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent(this, CameraActivity.class);
-                mIntentLauncher.launch(intent);
+                mCameraViewIntentLauncher.launch(intent);
             } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                 // TODO: Improve this UI, inform the user that the camera permission is important and ask again
                 mRequestPermissionLauncher.launch(Manifest.permission.CAMERA);
@@ -87,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             EditText editTextQRCode = findViewById(R.id.editTextQRCode);
             String machineCode = editTextQRCode.getText().toString();
             if (!machineCode.isEmpty() && android.text.TextUtils.isDigitsOnly(machineCode)) {
-                launchBackendConnectionWorker(machineCode);
+                getMachineInfoFromBackend(machineCode);
             } else {
                 View mainView = findViewById(R.id.mainLayout);
                 Snackbar.make(mainView, "Machine code must be non null and number based", Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -95,17 +74,110 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void launchBackendConnectionWorker(String machineCode) {
-        // Show progress bar indicating that a connection to the backend is in progress
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-        TextView textView = findViewById(R.id.progressText);
-        progressBar.setVisibility(View.VISIBLE);
-        textView.setVisibility(View.VISIBLE);
+    // Launches an intent to the camera view and waits for the response containing the QR Code scanned
+    private final ActivityResultLauncher<Intent> mCameraViewIntentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    assert data != null;
+                    String machineCode = data.getStringExtra("QRCode");
+                    getMachineInfoFromBackend(machineCode);
+                }
+            });
 
-        // Send machine code data to the worker object
+    // Prompts the user for the camera permission then either calls the Camera View or inform that without the permission it  can't
+    private final ActivityResultLauncher<String> mRequestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Intent intent = new Intent(this, CameraActivity.class);
+                    mCameraViewIntentLauncher.launch(intent);
+                } else {
+                    // TODO: Improve handling when permission is denied, give user a second chance to grant the permission
+                    View mainView = findViewById(R.id.mainLayout);
+                    Snackbar.make(mainView, "Permission denied, not opening the camera view", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
+            });
+
+    private void getMachineInfoFromBackend(String machineCode) {
+        // Observer to wait for backend task response
+        Observer<WorkInfo> observer = workInfo -> {
+            if (workInfo.getState().isFinished()) {
+                View mainView = findViewById(R.id.mainLayout);
+                String workerResult = workInfo.getOutputData()
+                        .getString(BackendConnectionWorker.WORKER_RESULT);
+                if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                    // Send received data from backend to new activity to display
+                    launchEquipmentInfoActivity(workerResult);
+                } else {
+                    Snackbar.make(mainView, "Error getting info for machine of id " + machineCode + ": " + workerResult, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
+                // Response received, hides progress indicators
+                hideProgressIndicators();
+            }
+        };
+
+        // Information for the backend worker
         Data inputData = new Data.Builder()
-                .putString(BackendConnectionWorker.INPUT_MACHINE_CODE, machineCode)
+                .putString(BackendConnectionWorker.ITEM_CODE, machineCode)
+                .putString(BackendConnectionWorker.CONNECTION_TYPE, BackendConnectionTypeEnum.GET_MACHINE_INFO.toString())
                 .build();
+        launchBackendConnectionWorker(inputData, observer);
+    }
+
+    // Launch the equipment info activity waiting with the equipment info
+    private void launchEquipmentInfoActivity(String equipmentInfo) {
+        Intent intent = new Intent(this, EquipmentInfoActivity.class);
+        intent.putExtra(EquipmentInfoActivity.EQUIPMENT_INFO_KEY, equipmentInfo);
+        mEquipmentInfoIntentLauncher.launch(intent);
+    }
+
+    // Launcher for the equipment info activity that expects the update info to send to the backend
+    private final ActivityResultLauncher<Intent> mEquipmentInfoIntentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    assert data != null;
+                    String machineCode = data.getStringExtra(EquipmentInfoActivity.MACHINE_CODE);
+                    String machineUpdateJSON = data.getStringExtra(EquipmentInfoActivity.MACHINE_UPDATE_INFO);
+                    updateMachineInfoOnBackend(machineCode, machineUpdateJSON);
+                }
+            });
+
+    private void updateMachineInfoOnBackend(String machineCode, String machineDataJSON) {
+        // Observer to wait for backend task response
+        Observer<WorkInfo> observer = workInfo -> {
+            if (workInfo.getState().isFinished()) {
+                View mainView = findViewById(R.id.mainLayout);
+                String workerResult = workInfo.getOutputData()
+                        .getString(BackendConnectionWorker.WORKER_RESULT);
+                if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                    Snackbar.make(mainView, "Successfully updated info for machine of id " + machineCode, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } else {
+                    Snackbar.make(mainView, "Error updating info for machine of id " + machineCode + ": " + workerResult, Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
+                // Response received, hides progress indicators
+                hideProgressIndicators();
+            }
+        };
+
+        // Information for the backend worker
+        Data inputData = new Data.Builder()
+                .putString(BackendConnectionWorker.ITEM_CODE, machineCode)
+                .putString(BackendConnectionWorker.ITEM_INFO, machineDataJSON)
+                .putString(BackendConnectionWorker.CONNECTION_TYPE, BackendConnectionTypeEnum.UPDATE_MACHINE_INFO.toString())
+                .build();
+        launchBackendConnectionWorker(inputData, observer);
+    }
+
+    // Launches a background task to connect to the backend and changes visibility of progress bar
+    private void launchBackendConnectionWorker(Data inputData, Observer<WorkInfo> observer) {
+        // Show progress bar indicating that a connection to the backend is in progress
+        showProgressIndicators();
 
         WorkRequest backendConnectionRequest = new OneTimeWorkRequest
                 .Builder(BackendConnectionWorker.class)
@@ -115,24 +187,22 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(this).enqueue(backendConnectionRequest);
 
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(backendConnectionRequest.getId())
-                .observe(this, workInfo -> {
-                    if (workInfo.getState().isFinished()) {
-                        View mainView = findViewById(R.id.mainLayout);
-                        String workerResult = workInfo.getOutputData()
-                                .getString(BackendConnectionWorker.WORKER_RESULT);
-                        if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                            // Send received data from backend to new activity to display
-                            Intent intent = new Intent(this, EquipmentInfoActivity.class);
-                            intent.putExtra(EquipmentInfoActivity.EQUIPMENT_INFO_KEY, workerResult);
-                            mIntentLauncher.launch(intent);
-                        } else {
-                            Snackbar.make(mainView, "Error getting info for machine of id " + machineCode + ": " + workerResult, Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                        }
+                .observe(this, observer);
+    }
 
-                        progressBar.setVisibility(View.GONE);
-                        textView.setVisibility(View.GONE);
-                    }
-                });
+    // Shows the progress indicators on the Main Activity that are hidden by default
+    private void showProgressIndicators() {
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        TextView textView = findViewById(R.id.progressText);
+        progressBar.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+    }
+
+    // Hides the progress indicators after a response was received from the backend
+    private void hideProgressIndicators() {
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        TextView textView = findViewById(R.id.progressText);
+        progressBar.setVisibility(View.GONE);
+        textView.setVisibility(View.GONE);
     }
 }
