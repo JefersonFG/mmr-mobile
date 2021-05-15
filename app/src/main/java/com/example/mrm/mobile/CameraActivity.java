@@ -12,6 +12,8 @@ import com.google.android.material.snackbar.Snackbar;
 public class CameraActivity extends AppCompatActivity {
     private CodeScanner mCodeScanner;
 
+    public static String MACHINE_CODE = "machineCode";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +25,7 @@ public class CameraActivity extends AppCompatActivity {
 
         mCodeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
             Intent data = new Intent();
-            data.putExtra("QRCode", result.getText());
+            data.putExtra(MACHINE_CODE, result.getText());
             setResult(RESULT_OK, data);
             finish();
         }));

@@ -59,7 +59,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextQRCode"
+        android:id="@+id/editTextMachineCode"
         android:layout_width="372dp"
         android:layout_height="43dp"
         android:layout_marginStart="15dp"
@@ -70,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainInstructionsText"
-        android:autofillHints="@string/editTextQRCodeHint"
+        android:autofillHints="@string/editTextMachineCodeHint"
         tools:ignore="LabelFor" />
 
     <Button
@@ -81,6 +81,6 @@
         android:layout_marginEnd="15dp"
         android:text="@string/searchButtonString"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextQRCode" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextMachineCode" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,9 +62,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Get the typed in machine code, validate and start backend connection process
-            // TODO: Machine code is a better name once we got the actual data on the QR Code
-            EditText editTextQRCode = findViewById(R.id.editTextQRCode);
-            String machineCode = editTextQRCode.getText().toString();
+            EditText editTextMachineCode = findViewById(R.id.editTextMachineCode);
+            String machineCode = editTextMachineCode.getText().toString();
             if (!machineCode.isEmpty() && android.text.TextUtils.isDigitsOnly(machineCode)) {
                 getMachineInfoFromBackend(machineCode);
             } else {
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
                     assert data != null;
-                    String machineCode = data.getStringExtra("QRCode");
+                    String machineCode = data.getStringExtra(CameraActivity.MACHINE_CODE);
                     getMachineInfoFromBackend(machineCode);
                 }
             });
