@@ -31,4 +31,11 @@
     <string name="machineVoltage">Tensão</string>
     <string name="machineYear">Ano</string>
     <string name="machineSerialNumber">Número de série</string>
+    <string name="machineStatusInventory">No inventário</string>
+    <string name="machineStatusMaintenance">Em manutenção</string>
+    <string name="machineStatusReadyForRental">Pronto para aluguel</string>
+    <string name="machineStatusRented">Em aluguel</string>
+    <string name="True">Verdadeiro</string>
+    <string name="False">Falso</string>
+    <string name="stockItemFallbackString">Informação indisponível</string>
 </resources>

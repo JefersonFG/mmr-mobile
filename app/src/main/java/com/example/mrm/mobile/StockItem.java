@@ -11,10 +11,13 @@ public class StockItem {
 
     public HashMap<StockItemFields, String> infoMap = new HashMap<>();
 
-    private static final String FALLBACK_STRING = "unavailable info";
+    private final String mFallbackString;
 
     // Builds the internal representation based on the json received from the backend
-    public StockItem(String itemInfo) {
+    public StockItem(String itemInfo, String fallbackString) {
+        // Updated by the activity that calls it so a translatable string can be used
+        mFallbackString = fallbackString;
+
         try {
             JSONObject itemInfoJSON = new JSONObject(itemInfo);
 
@@ -28,9 +31,9 @@ public class StockItem {
     }
 
     private String parseJSONItem(JSONObject itemInfoJSON, String infoToLookup) {
-        String value = itemInfoJSON.optString(infoToLookup, FALLBACK_STRING);
+        String value = itemInfoJSON.optString(infoToLookup, mFallbackString);
         if (value.equals("null")) {
-            value = FALLBACK_STRING;
+            value = mFallbackString;
         }
         return value;
     }

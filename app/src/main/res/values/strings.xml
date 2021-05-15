@@ -30,4 +30,11 @@
     <string name="machineVoltage">Voltage</string>
     <string name="machineYear">Year</string>
     <string name="machineSerialNumber">Serial Number</string>
+    <string name="machineStatusInventory">On inventory</string>
+    <string name="machineStatusMaintenance">In maintenance</string>
+    <string name="machineStatusReadyForRental">Ready for rental</string>
+    <string name="machineStatusRented">Rented</string>
+    <string name="True">True</string>
+    <string name="False">False</string>
+    <string name="stockItemFallbackString">Unavailable data</string>
 </resources>

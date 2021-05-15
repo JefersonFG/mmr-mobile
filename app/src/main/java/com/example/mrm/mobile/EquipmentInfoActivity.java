@@ -37,7 +37,8 @@ public class EquipmentInfoActivity extends AppCompatActivity
         String equipmentInfo = getIntent().getStringExtra(EQUIPMENT_INFO_KEY);
 
         // Parse the equipment info into its own class
-        mStockItem = new StockItem(equipmentInfo);
+        String fallbackString = getResources().getString(R.string.stockItemFallbackString);
+        mStockItem = new StockItem(equipmentInfo, fallbackString);
 
         // Prepares the output
         StringBuilder outputBuilder = new StringBuilder();
@@ -47,10 +48,8 @@ public class EquipmentInfoActivity extends AppCompatActivity
         outputBuilder.append(getResources().getString(R.string.machinePower)).append(": ").append(mStockItem.infoMap.get(StockItemFields.power)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineBrand)).append(": ").append(mStockItem.infoMap.get(StockItemFields.brand)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineModel)).append(": ").append(mStockItem.infoMap.get(StockItemFields.model)).append("\n");
-        // TODO: Translate status from backend
-        outputBuilder.append(getResources().getString(R.string.machineStatus)).append(": ").append(mStockItem.infoMap.get(StockItemFields.status)).append("\n");
-        // TODO: Translate boolean values when showing on the UI
-        outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(mStockItem.infoMap.get(StockItemFields.needsMaintenance)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineStatus)).append(": ").append(statusToReadableText(mStockItem.infoMap.get(StockItemFields.status))).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(booleanToReadableText(mStockItem.infoMap.get(StockItemFields.needsMaintenance))).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineComment)).append(": ").append(mStockItem.infoMap.get(StockItemFields.comment)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machinePressure)).append(": ").append(mStockItem.infoMap.get(StockItemFields.pressure)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineThroughput)).append(": ").append(mStockItem.infoMap.get(StockItemFields.throughput)).append("\n");
@@ -68,6 +67,46 @@ public class EquipmentInfoActivity extends AppCompatActivity
             // Show dialog in full screen
             RegisterMachineEventDialogFragment.display(getSupportFragmentManager());
         });
+    }
+
+    // Converts the status values from the backend to a readable, translated string
+    private String statusToReadableText(String status) {
+        if (status == null) {
+            // TODO: Improve error handling
+            return "";
+        }
+
+        switch (status) {
+            case "INVENTORY":
+                return getResources().getString(R.string.machineStatusInventory);
+            case "MAINTENANCE":
+                return getResources().getString(R.string.machineStatusMaintenance);
+            case "READY_FOR_RENTAL":
+                return getResources().getString(R.string.machineStatusReadyForRental);
+            case "RENTED":
+                return getResources().getString(R.string.machineStatusRented);
+            default:
+                // TODO: Improve error handling
+                return "";
+        }
+    }
+
+    // Converts the boolean to a translated string
+    private String booleanToReadableText(String booleanValue) {
+        if (booleanValue == null) {
+            // TODO: Improve error handling
+            return "";
+        }
+
+        switch (booleanValue) {
+            case "true":
+                return getResources().getString(R.string.True);
+            case "false":
+                return getResources().getString(R.string.False);
+            default:
+                // TODO: Improve error handling
+                return "";
+        }
     }
 
     @Override
@@ -100,10 +139,9 @@ public class EquipmentInfoActivity extends AppCompatActivity
         try {
             jsonWriter.beginObject();
 
-            // TODO: Constants for json keys
-            jsonWriter.name("status").value(event.toString());
-            jsonWriter.name("needsMaintenance").value(needsMaintenance);
-            jsonWriter.name("comment").value(comment);
+            jsonWriter.name(StockItemFields.status.toString()).value(event.toString());
+            jsonWriter.name(StockItemFields.needsMaintenance.toString()).value(needsMaintenance);
+            jsonWriter.name(StockItemFields.comment.toString()).value(comment);
 
             jsonWriter.endObject();
         } catch (Exception e) {
