@@ -26,4 +26,9 @@
     <string name="eventReadyToRent">Marcar como pronto para alugar</string>
     <string name="eventFlagNeedsMaintenance">Marcar como precisando de manutenção</string>
     <string name="eventComment">Adicione um comentário para esse registro (opcional)</string>
+    <string name="machinePressure">Pressão</string>
+    <string name="machineThroughput">Vazão</string>
+    <string name="machineVoltage">Tensão</string>
+    <string name="machineYear">Ano</string>
+    <string name="machineSerialNumber">Número de série</string>
 </resources>

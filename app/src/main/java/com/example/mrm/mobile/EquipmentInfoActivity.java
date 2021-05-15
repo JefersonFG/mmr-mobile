@@ -24,9 +24,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
 
     public static final String MACHINE_CODE = "machine_code";
     public static final String MACHINE_UPDATE_INFO = "machine_update_info";
-
     public static final String EQUIPMENT_INFO_KEY = "equipment_info";
-    public static final String FALLBACK_STRING = "unavailable info";
 
     private StockItem mStockItem;
 
@@ -42,7 +40,6 @@ public class EquipmentInfoActivity extends AppCompatActivity
         mStockItem = new StockItem(equipmentInfo);
 
         // Prepares the output
-        // TODO: Add pressure, throughput, voltage, year and serial number
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(mStockItem.infoMap.get(StockItemFields.id)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineName)).append(": ").append(mStockItem.infoMap.get(StockItemFields.name)).append("\n");
@@ -55,6 +52,11 @@ public class EquipmentInfoActivity extends AppCompatActivity
         // TODO: Translate boolean values when showing on the UI
         outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(mStockItem.infoMap.get(StockItemFields.needsMaintenance)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineComment)).append(": ").append(mStockItem.infoMap.get(StockItemFields.comment)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machinePressure)).append(": ").append(mStockItem.infoMap.get(StockItemFields.pressure)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineThroughput)).append(": ").append(mStockItem.infoMap.get(StockItemFields.throughput)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineVoltage)).append(": ").append(mStockItem.infoMap.get(StockItemFields.voltage)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineYear)).append(": ").append(mStockItem.infoMap.get(StockItemFields.year)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineSerialNumber)).append(": ").append(mStockItem.infoMap.get(StockItemFields.serialNumber)).append("\n");
 
         // Writes it to the main textview
         TextView infoTextView = findViewById(R.id.infoTextView);

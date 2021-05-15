@@ -25,4 +25,9 @@
     <string name="eventReadyToRent">Set to ready to rent</string>
     <string name="eventFlagNeedsMaintenance">Mark as needing maintenance</string>
     <string name="eventComment">Add a comment to this event entry (optional)</string>
+    <string name="machinePressure">Pressure</string>
+    <string name="machineThroughput">Throughput</string>
+    <string name="machineVoltage">Voltage</string>
+    <string name="machineYear">Year</string>
+    <string name="machineSerialNumber">Serial Number</string>
 </resources>
