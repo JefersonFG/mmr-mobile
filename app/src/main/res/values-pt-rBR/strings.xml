@@ -46,4 +46,6 @@
     <string name="errorMessageUpdatingInfo">Erro atualizando informações da máquina de código %1$s: %2$s</string>
     <string name="successMessageUpdatingInfo">Atualizadas informações da máquina de código %1$s com sucesso</string>
     <string name="machineEventErrorNoEventSelected">Nenhum evento selecionado para atualização da máquina de código %1$s</string>
+    <string name="cameraErrorNoPermission">Permissão negada, leitor de código QR não pode ser aberto</string>
+    <string name="machineCodeTextEditInvalidFormat">Código da máquina deve ser não nulo e númerico</string>
 </resources>

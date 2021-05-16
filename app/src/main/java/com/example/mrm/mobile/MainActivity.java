@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 getMachineInfoFromBackend(machineCode);
             } else {
                 View mainView = findViewById(R.id.mainLayout);
-                Snackbar.make(mainView, "Machine code must be non null and number based", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Snackbar.make(mainView, getResources().getString(R.string.machineCodeTextEditInvalidFormat), Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
     }
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // TODO: Improve handling when permission is denied, give user a second chance to grant the permission
                     View mainView = findViewById(R.id.mainLayout);
-                    Snackbar.make(mainView, "Permission denied, not opening the camera view", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Snackbar.make(mainView, getResources().getString(R.string.cameraErrorNoPermission), Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
 
@@ -138,9 +138,10 @@ public class MainActivity extends AppCompatActivity {
                     updateMachineInfoOnBackend(machineCode, machineUpdateJSON);
                 } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     Intent data = result.getData();
-                    assert data != null;
-                    String errorMessage = data.getStringExtra(EquipmentInfoActivity.ERROR_MESSAGE);
-                    launchOperationResultActivity(false, errorMessage);
+                    if (data != null) {
+                        String errorMessage = data.getStringExtra(EquipmentInfoActivity.ERROR_MESSAGE);
+                        launchOperationResultActivity(false, errorMessage);
+                    }
                 }
             });
 
