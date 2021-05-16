@@ -107,12 +107,9 @@ public class MainActivity extends AppCompatActivity {
                     // Send received data from backend to new activity to display
                     launchEquipmentInfoActivity(workerResult);
                 } else {
-                    Intent intent = new Intent(this, OperationResultActivity.class);
-                    intent.putExtra(OperationResultActivity.RESULT_KEY, false);
                     // TODO: Translate error message
                     String errorMessage = "Error getting info for machine of id " + machineCode + ": " + workerResult;
-                    intent.putExtra(OperationResultActivity.MESSAGE_KEY, errorMessage);
-                    startActivity(intent);
+                    launchOperationResultActivity(false, errorMessage);
                 }
 
                 // Response received, hides progress indicators
@@ -147,25 +144,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    // Shows the result screen
+    void launchOperationResultActivity(boolean success, String detailedMessage) {
+        Intent intent = new Intent(this, OperationResultActivity.class);
+        intent.putExtra(OperationResultActivity.RESULT_KEY, success);
+        intent.putExtra(OperationResultActivity.MESSAGE_KEY, detailedMessage);
+        startActivity(intent);
+    }
+
     private void updateMachineInfoOnBackend(String machineCode, String machineDataJSON) {
         // Observer to wait for backend task response
         Observer<WorkInfo> observer = workInfo -> {
             if (workInfo.getState().isFinished()) {
                 String workerResult = workInfo.getOutputData()
                         .getString(BackendConnectionWorker.WORKER_RESULT);
-                Intent intent = new Intent(this, OperationResultActivity.class);
 
                 if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                    // TODO: Create activity launcher for the operation result
-                    intent.putExtra(OperationResultActivity.RESULT_KEY, true);
+                    // TODO: Detailed message on success?
+                    launchOperationResultActivity(true, "");
                 } else {
                     // TODO: Translate error message
-                    intent.putExtra(OperationResultActivity.RESULT_KEY, false);
                     String errorMessage = "Error updating info for machine of id " + machineCode + ": " + workerResult;
-                    intent.putExtra(OperationResultActivity.MESSAGE_KEY, errorMessage);
+                    launchOperationResultActivity(false, errorMessage);
                 }
-
-                startActivity(intent);
 
                 // Response received, hides progress indicators
                 hideProgressIndicators();
