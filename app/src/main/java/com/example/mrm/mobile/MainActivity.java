@@ -26,9 +26,6 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-// TODO: Improve readability
-// TODO: Layouts must support scrolling
-
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                     String machineCode = data.getStringExtra(EquipmentInfoActivity.MACHINE_CODE);
                     String machineUpdateJSON = data.getStringExtra(EquipmentInfoActivity.MACHINE_UPDATE_INFO);
                     updateMachineInfoOnBackend(machineCode, machineUpdateJSON);
-                } else {
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                     Intent data = result.getData();
                     assert data != null;
                     String errorMessage = data.getStringExtra(EquipmentInfoActivity.ERROR_MESSAGE);
