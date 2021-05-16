@@ -44,4 +44,5 @@
     <string name="errorMessageGettingInfo">Error getting info for machine of code %1$s: %2$s</string>
     <string name="errorMessageUpdatingInfo">Error updating info of machine of code %1$s: %2$s</string>
     <string name="successMessageUpdatingInfo">Successfully updated info of machine of code %1$s</string>
+    <string name="machineEventErrorNoEventSelected">No event selected for update of machine with code %1$s</string>
 </resources>

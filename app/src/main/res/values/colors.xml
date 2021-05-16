@@ -18,4 +18,7 @@
     <color name="primaryTextColorNight">#ffffff</color>
     <color name="secondaryTextColorNight">#ffffff</color>
     <color name="backgroundColorNight">#121212</color>
+
+    <color name="textColorLightTheme">#000000</color>
+    <color name="textColorNightTheme">#ffffff</color>
 </resources>

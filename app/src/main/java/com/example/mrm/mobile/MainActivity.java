@@ -139,6 +139,11 @@ public class MainActivity extends AppCompatActivity {
                     String machineCode = data.getStringExtra(EquipmentInfoActivity.MACHINE_CODE);
                     String machineUpdateJSON = data.getStringExtra(EquipmentInfoActivity.MACHINE_UPDATE_INFO);
                     updateMachineInfoOnBackend(machineCode, machineUpdateJSON);
+                } else {
+                    Intent data = result.getData();
+                    assert data != null;
+                    String errorMessage = data.getStringExtra(EquipmentInfoActivity.ERROR_MESSAGE);
+                    launchOperationResultActivity(false, errorMessage);
                 }
             });
 

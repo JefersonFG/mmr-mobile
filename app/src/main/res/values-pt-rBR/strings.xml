@@ -45,4 +45,5 @@
     <string name="errorMessageGettingInfo">Erro obtendo informações da máquina de código %1$s: %2$s</string>
     <string name="errorMessageUpdatingInfo">Erro atualizando informações da máquina de código %1$s: %2$s</string>
     <string name="successMessageUpdatingInfo">Atualizadas informações da máquina de código %1$s com sucesso</string>
+    <string name="machineEventErrorNoEventSelected">Nenhum evento selecionado para atualização da máquina de código %1$s</string>
 </resources>

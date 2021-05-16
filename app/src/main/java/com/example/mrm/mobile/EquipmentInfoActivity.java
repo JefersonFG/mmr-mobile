@@ -25,6 +25,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
     public static final String MACHINE_CODE = "machine_code";
     public static final String MACHINE_UPDATE_INFO = "machine_update_info";
     public static final String EQUIPMENT_INFO_KEY = "equipment_info";
+    public static final String ERROR_MESSAGE = "error_message";
 
     private StockItem mStockItem;
 
@@ -114,11 +115,19 @@ public class EquipmentInfoActivity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // Get user input
-        // TODO: What if the user doesn't make a choice on every option?
         RegisterMachineEventDialogFragment dialogFragment = (RegisterMachineEventDialogFragment) dialog;
         MachineEventsEnum selectedOption = dialogFragment.SelectedEventOption;
         boolean flag = dialogFragment.MaintenanceFlagChecked;
         String comment = dialogFragment.Comment;
+
+        // Validate that an event was chosen
+        if (selectedOption == MachineEventsEnum.NONE) {
+            Intent data = new Intent();
+            String machineCode = mStockItem.infoMap.get(StockItemFields.id);
+            data.putExtra(ERROR_MESSAGE, getResources().getString(R.string.machineEventErrorNoEventSelected, machineCode));
+            setResult(RESULT_CANCELED, data);
+            finish();
+        }
 
         // Generate update JSON
         // TODO: Handle error building the JSON object
