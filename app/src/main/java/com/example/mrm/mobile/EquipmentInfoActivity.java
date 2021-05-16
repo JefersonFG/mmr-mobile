@@ -40,22 +40,24 @@ public class EquipmentInfoActivity extends AppCompatActivity
         String fallbackString = getResources().getString(R.string.stockItemFallbackString);
         mStockItem = new StockItem(equipmentInfo, fallbackString);
 
+        // TODO: Show the image on the layout
+
         // Prepares the output
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(mStockItem.infoMap.get(StockItemFields.id)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineName)).append(": ").append(mStockItem.infoMap.get(StockItemFields.name)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineType)).append(": ").append(mStockItem.infoMap.get(StockItemFields.type)).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machinePower)).append(": ").append(mStockItem.infoMap.get(StockItemFields.power)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineBrand)).append(": ").append(mStockItem.infoMap.get(StockItemFields.brand)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineModel)).append(": ").append(mStockItem.infoMap.get(StockItemFields.model)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machinePower)).append(": ").append(mStockItem.infoMap.get(StockItemFields.power)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineVoltage)).append(": ").append(mStockItem.infoMap.get(StockItemFields.voltage)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machinePressure)).append(": ").append(mStockItem.infoMap.get(StockItemFields.pressure)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineThroughput)).append(": ").append(mStockItem.infoMap.get(StockItemFields.throughput)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineYear)).append(": ").append(mStockItem.infoMap.get(StockItemFields.year)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineSerialNumber)).append(": ").append(mStockItem.infoMap.get(StockItemFields.serialNumber)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineStatus)).append(": ").append(statusToReadableText(mStockItem.infoMap.get(StockItemFields.status))).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineMaintenanceNeeded)).append("? ").append(booleanToReadableText(mStockItem.infoMap.get(StockItemFields.needsMaintenance))).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineComment)).append(": ").append(mStockItem.infoMap.get(StockItemFields.comment)).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machinePressure)).append(": ").append(mStockItem.infoMap.get(StockItemFields.pressure)).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineThroughput)).append(": ").append(mStockItem.infoMap.get(StockItemFields.throughput)).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineVoltage)).append(": ").append(mStockItem.infoMap.get(StockItemFields.voltage)).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineYear)).append(": ").append(mStockItem.infoMap.get(StockItemFields.year)).append("\n");
-        outputBuilder.append(getResources().getString(R.string.machineSerialNumber)).append(": ").append(mStockItem.infoMap.get(StockItemFields.serialNumber)).append("\n");
 
         // Writes it to the main textview
         TextView infoTextView = findViewById(R.id.infoTextView);
