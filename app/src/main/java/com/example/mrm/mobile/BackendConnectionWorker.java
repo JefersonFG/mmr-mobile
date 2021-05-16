@@ -1,11 +1,14 @@
 package com.example.mrm.mobile;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
+import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -16,11 +19,16 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class BackendConnectionWorker extends Worker {
+    public static String TAG = "backend_connection_worker";
+
     public static final String ITEM_CODE = "code";
     public static final String ITEM_INFO = "info";
     public static final String CONNECTION_TYPE = "type";
     public static final String WORKER_RESULT = "result";
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+    private static final String BACKEND_ERROR_MESSAGE_KEY = "message";
+    private static final String ERROR_MESSAGE_FALLBACK = "unavailable info";
 
     public BackendConnectionWorker(
             @NonNull Context context,
@@ -91,9 +99,9 @@ public class BackendConnectionWorker extends Worker {
                             .build();
                     return Result.success(connectionResponse);
                 } else {
-                    // TODO: Improve error handling - parse json and get the data under "message"
+                    // TODO: Improve error handling
                     Data errorResponse = new Data.Builder()
-                            .putString(WORKER_RESULT, backendResponse)
+                            .putString(WORKER_RESULT, getErrorMessageFromResponse(backendResponse))
                             .build();
                     return Result.failure(errorResponse);
                 }
@@ -111,5 +119,19 @@ public class BackendConnectionWorker extends Worker {
                     .build();
             return Result.failure(errorResponse);
         }
+    }
+
+    private String getErrorMessageFromResponse(String backendResponse) {
+        String errorMessage = ERROR_MESSAGE_FALLBACK;
+
+        try {
+            JSONObject responseJSON = new JSONObject(backendResponse);
+            errorMessage = responseJSON.optString(BACKEND_ERROR_MESSAGE_KEY, ERROR_MESSAGE_FALLBACK);
+        } catch (Exception e) {
+            // TODO: Improve error handling
+            Log.d(TAG, "Error parsing backend error: " + e.getMessage());
+        }
+
+        return errorMessage;
     }
 }
