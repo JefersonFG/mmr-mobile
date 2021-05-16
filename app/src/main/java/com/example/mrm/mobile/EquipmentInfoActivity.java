@@ -112,6 +112,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // Get user input
+        // TODO: What if the user doesn't make a choice on every option?
         RegisterMachineEventDialogFragment dialogFragment = (RegisterMachineEventDialogFragment) dialog;
         MachineEventsEnum selectedOption = dialogFragment.SelectedEventOption;
         boolean flag = dialogFragment.MaintenanceFlagChecked;

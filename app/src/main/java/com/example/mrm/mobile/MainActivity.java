@@ -107,8 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     // Send received data from backend to new activity to display
                     launchEquipmentInfoActivity(workerResult);
                 } else {
-                    // TODO: Translate error message
-                    String errorMessage = "Error getting info for machine of id " + machineCode + ": " + workerResult;
+                    String errorMessage = getResources().getString(R.string.errorMessageGettingInfo, machineCode, workerResult);
                     launchOperationResultActivity(false, errorMessage);
                 }
 
@@ -160,11 +159,10 @@ public class MainActivity extends AppCompatActivity {
                         .getString(BackendConnectionWorker.WORKER_RESULT);
 
                 if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                    // TODO: Detailed message on success?
-                    launchOperationResultActivity(true, "");
+                    String successMessage = getResources().getString(R.string.successMessageUpdatingInfo, machineCode);
+                    launchOperationResultActivity(true, successMessage);
                 } else {
-                    // TODO: Translate error message
-                    String errorMessage = "Error updating info for machine of id " + machineCode + ": " + workerResult;
+                    String errorMessage = getResources().getString(R.string.errorMessageUpdatingInfo, machineCode, workerResult);
                     launchOperationResultActivity(false, errorMessage);
                 }
 

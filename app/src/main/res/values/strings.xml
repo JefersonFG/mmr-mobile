@@ -41,4 +41,7 @@
     <string name="operationResultTextSuccess">Operation executed successfully</string>
     <string name="operationResultTextFailure">Operation failed</string>
     <string name="operationResultAcknowledgeButtonText">OK</string>
+    <string name="errorMessageGettingInfo">Error getting info for machine of code %1$s: %2$s</string>
+    <string name="errorMessageUpdatingInfo">Error updating info of machine of code %1$s: %2$s</string>
+    <string name="successMessageUpdatingInfo">Successfully updated info of machine of code %1$s</string>
 </resources>

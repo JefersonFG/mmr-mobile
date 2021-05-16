@@ -19,25 +19,24 @@ public class OperationResultActivity extends AppCompatActivity {
 
         // Gets the input data
         boolean result = getIntent().getBooleanExtra(RESULT_KEY, false);
+        String detailsMessage = getIntent().getStringExtra(MESSAGE_KEY);
 
         ImageView indicatorImage = findViewById(R.id.indicatorIcon);
         TextView indicatorText = findViewById(R.id.indicatorText);
+        TextView indicatorDetails = findViewById(R.id.indicatorDetails);
 
         if (result) {
             // Set success image and text
             indicatorImage.setImageResource(R.drawable.ic_success);
             indicatorText.setText(getResources().getString(R.string.operationResultTextSuccess));
         } else {
-            // Set failure image and text, gets details and set detail text
+            // Set failure image and text
             indicatorImage.setImageResource(R.drawable.ic_failure);
             indicatorText.setText(getResources().getString(R.string.operationResultTextFailure));
-
-            // Gets error message
-            String errorMessage = getIntent().getStringExtra(MESSAGE_KEY);
-
-            TextView indicatorDetails = findViewById(R.id.indicatorDetails);
-            indicatorDetails.setText(errorMessage);
         }
+
+        // Sets detail message
+        indicatorDetails.setText(detailsMessage);
 
         // Sets the button click to finish this activity
         Button operationResultAcknowledgeButton = findViewById(R.id.operationResultAcknowledgeButton);

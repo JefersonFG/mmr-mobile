@@ -42,4 +42,7 @@
     <string name="operationResultTextSuccess">Operação concluída com sucesso</string>
     <string name="operationResultTextFailure">Operação falhou</string>
     <string name="operationResultAcknowledgeButtonText">OK</string>
+    <string name="errorMessageGettingInfo">Erro obtendo informações da máquina de código %1$s: %2$s</string>
+    <string name="errorMessageUpdatingInfo">Erro atualizando informações da máquina de código %1$s: %2$s</string>
+    <string name="successMessageUpdatingInfo">Atualizadas informações da máquina de código %1$s com sucesso</string>
 </resources>
