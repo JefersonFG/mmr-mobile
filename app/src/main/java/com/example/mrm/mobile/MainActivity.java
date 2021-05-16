@@ -27,8 +27,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 // TODO: Error handling strings must be translated as well
-
 // TODO: Improve readability
+// TODO: Layouts must support scrolling
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -101,15 +101,18 @@ public class MainActivity extends AppCompatActivity {
         // Observer to wait for backend task response
         Observer<WorkInfo> observer = workInfo -> {
             if (workInfo.getState().isFinished()) {
-                View mainView = findViewById(R.id.mainLayout);
                 String workerResult = workInfo.getOutputData()
                         .getString(BackendConnectionWorker.WORKER_RESULT);
                 if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
                     // Send received data from backend to new activity to display
                     launchEquipmentInfoActivity(workerResult);
                 } else {
-                    Snackbar.make(mainView, "Error getting info for machine of id " + machineCode + ": " + workerResult, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    Intent intent = new Intent(this, OperationResultActivity.class);
+                    intent.putExtra(OperationResultActivity.RESULT_KEY, false);
+                    // TODO: Translate error message
+                    String errorMessage = "Error getting info for machine of id " + machineCode + ": " + workerResult;
+                    intent.putExtra(OperationResultActivity.MESSAGE_KEY, errorMessage);
+                    startActivity(intent);
                 }
 
                 // Response received, hides progress indicators
@@ -148,16 +151,21 @@ public class MainActivity extends AppCompatActivity {
         // Observer to wait for backend task response
         Observer<WorkInfo> observer = workInfo -> {
             if (workInfo.getState().isFinished()) {
-                View mainView = findViewById(R.id.mainLayout);
                 String workerResult = workInfo.getOutputData()
                         .getString(BackendConnectionWorker.WORKER_RESULT);
+                Intent intent = new Intent(this, OperationResultActivity.class);
+
                 if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                    Snackbar.make(mainView, "Successfully updated info for machine of id " + machineCode, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    // TODO: Create activity launcher for the operation result
+                    intent.putExtra(OperationResultActivity.RESULT_KEY, true);
                 } else {
-                    Snackbar.make(mainView, "Error updating info for machine of id " + machineCode + ": " + workerResult, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    // TODO: Translate error message
+                    intent.putExtra(OperationResultActivity.RESULT_KEY, false);
+                    String errorMessage = "Error updating info for machine of id " + machineCode + ": " + workerResult;
+                    intent.putExtra(OperationResultActivity.MESSAGE_KEY, errorMessage);
                 }
+
+                startActivity(intent);
 
                 // Response received, hides progress indicators
                 hideProgressIndicators();

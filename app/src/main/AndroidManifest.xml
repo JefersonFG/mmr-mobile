@@ -17,6 +17,7 @@
         android:allowBackup="true"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="n">
+        <activity android:name=".OperationResultActivity" />
         <activity android:name=".EquipmentInfoActivity" />
         <activity android:name=".CameraActivity" />
         <activity android:name=".MainActivity">

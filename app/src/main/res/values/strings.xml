@@ -37,4 +37,8 @@
     <string name="True">True</string>
     <string name="False">False</string>
     <string name="stockItemFallbackString">Unavailable data</string>
+    <string name="operationResultImageDescription">Image indicating success or failure on the operation</string>
+    <string name="operationResultTextSuccess">Operation executed successfully</string>
+    <string name="operationResultTextFailure">Operation failed</string>
+    <string name="operationResultAcknowledgeButtonText">OK</string>
 </resources>

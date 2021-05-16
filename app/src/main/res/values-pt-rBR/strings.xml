@@ -38,4 +38,8 @@
     <string name="True">Verdadeiro</string>
     <string name="False">Falso</string>
     <string name="stockItemFallbackString">Informação indisponível</string>
+    <string name="operationResultImageDescription">Imagem indicando sucesso ou falha na operação</string>
+    <string name="operationResultTextSuccess">Operação concluída com sucesso</string>
+    <string name="operationResultTextFailure">Operação falhou</string>
+    <string name="operationResultAcknowledgeButtonText">OK</string>
 </resources>
