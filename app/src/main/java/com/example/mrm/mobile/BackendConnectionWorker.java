@@ -54,7 +54,7 @@ public class BackendConnectionWorker extends Worker {
         }
 
         // TODO: Update references to backend endpoint
-        String backendEndpoint = "http://10.0.2.2:3134/api/stockItems/" + machineCode;
+        String backendEndpoint = "http://10.0.2.2:3134/api/stockItems/code/" + machineCode;
 
         if (connectionType.equals(BackendConnectionTypeEnum.GET_MACHINE_INFO.toString())) {
             Request request = new Request.Builder()

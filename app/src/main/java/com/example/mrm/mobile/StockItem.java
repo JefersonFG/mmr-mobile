@@ -30,6 +30,10 @@ public class StockItem {
         }
     }
 
+    public String getMachineCode() {
+        return infoMap.get(StockItemFields.code);
+    }
+
     private String parseJSONItem(JSONObject itemInfoJSON, String infoToLookup) {
         String value = itemInfoJSON.optString(infoToLookup, mFallbackString);
         if (value.equals("null")) {

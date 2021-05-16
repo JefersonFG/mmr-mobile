@@ -1,7 +1,7 @@
 package com.example.mrm.mobile;
 
 public enum StockItemFields {
-    id,
+    code,
     name,
     type,
     power,

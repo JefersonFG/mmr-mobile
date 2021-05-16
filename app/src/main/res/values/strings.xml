@@ -6,7 +6,7 @@
     <string name="searchButtonString">Search</string>
     <string name="editTextMachineCodeHint">Type in the machine code</string>
     <string name="machineInfoTextViewPlaceholder">Placeholder</string>
-    <string name="machineID">Machine ID</string>
+    <string name="machineCode">Machine code</string>
     <string name="machineName">Name</string>
     <string name="machineType">Type</string>
     <string name="machinePower">Power</string>

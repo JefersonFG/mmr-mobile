@@ -7,14 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.JsonWriter;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.StringWriter;
 
@@ -45,7 +40,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
 
         // Prepares the output
         StringBuilder outputBuilder = new StringBuilder();
-        outputBuilder.append(getResources().getString(R.string.machineID)).append(": ").append(mStockItem.infoMap.get(StockItemFields.id)).append("\n");
+        outputBuilder.append(getResources().getString(R.string.machineCode)).append(": ").append(mStockItem.infoMap.get(StockItemFields.code)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineName)).append(": ").append(mStockItem.infoMap.get(StockItemFields.name)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineType)).append(": ").append(mStockItem.infoMap.get(StockItemFields.type)).append("\n");
         outputBuilder.append(getResources().getString(R.string.machineBrand)).append(": ").append(mStockItem.infoMap.get(StockItemFields.brand)).append("\n");
@@ -123,8 +118,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
         // Validate that an event was chosen
         if (selectedOption == MachineEventsEnum.NONE) {
             Intent data = new Intent();
-            String machineCode = mStockItem.infoMap.get(StockItemFields.id);
-            data.putExtra(ERROR_MESSAGE, getResources().getString(R.string.machineEventErrorNoEventSelected, machineCode));
+            data.putExtra(ERROR_MESSAGE, getResources().getString(R.string.machineEventErrorNoEventSelected, mStockItem.getMachineCode()));
             setResult(RESULT_CANCELED, data);
             finish();
         }
@@ -135,7 +129,7 @@ public class EquipmentInfoActivity extends AppCompatActivity
 
         // Send back to the main activity to connect to the backend and show the progress
         Intent data = new Intent();
-        data.putExtra(MACHINE_CODE, mStockItem.infoMap.get(StockItemFields.id));
+        data.putExtra(MACHINE_CODE, mStockItem.getMachineCode());
         data.putExtra(MACHINE_UPDATE_INFO, updateJSON);
         setResult(RESULT_OK, data);
         finish();
