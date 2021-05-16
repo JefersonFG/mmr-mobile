@@ -34,7 +34,7 @@
     <string name="machineStatusInventory">No inventário</string>
     <string name="machineStatusMaintenance">Em manutenção</string>
     <string name="machineStatusReadyForRental">Pronto para aluguel</string>
-    <string name="machineStatusRented">Em aluguel</string>
+    <string name="machineStatusCustomer">Com um cliente</string>
     <string name="True">Verdadeiro</string>
     <string name="False">Falso</string>
     <string name="stockItemFallbackString">Informação indisponível</string>
@@ -47,5 +47,5 @@
     <string name="successMessageUpdatingInfo">Atualizadas informações da máquina de código %1$s com sucesso</string>
     <string name="machineEventErrorNoEventSelected">Nenhum evento selecionado para atualização da máquina de código %1$s</string>
     <string name="cameraErrorNoPermission">Permissão negada, leitor de código QR não pode ser aberto</string>
-    <string name="machineCodeTextEditInvalidFormat">Código da máquina deve ser não nulo e númerico</string>
+    <string name="machineCodeTextEditInvalidFormat">Código da máquina deve ser não nulo e alfanumérico</string>
 </resources>

@@ -33,7 +33,7 @@
     <string name="machineStatusInventory">On inventory</string>
     <string name="machineStatusMaintenance">In maintenance</string>
     <string name="machineStatusReadyForRental">Ready for rental</string>
-    <string name="machineStatusRented">Rented</string>
+    <string name="machineStatusCustomer">With a customer</string>
     <string name="True">True</string>
     <string name="False">False</string>
     <string name="stockItemFallbackString">Unavailable data</string>
@@ -46,5 +46,5 @@
     <string name="successMessageUpdatingInfo">Successfully updated info of machine of code %1$s</string>
     <string name="machineEventErrorNoEventSelected">No event selected for update of machine with code %1$s</string>
     <string name="cameraErrorNoPermission">Permission denied, QR code reader can\'t be opened</string>
-    <string name="machineCodeTextEditInvalidFormat">Machine code must be non null and number based</string>
+    <string name="machineCodeTextEditInvalidFormat">Machine code must be non null and alphanumeric</string>
 </resources>
